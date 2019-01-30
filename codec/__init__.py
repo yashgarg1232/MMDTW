@@ -11,7 +11,7 @@ class MMDTW:
     _num_timestamps_2 = None
     _num_variates = None
 
-    _distance = "cosine"
+    _distance = "cityblock"
 
     def __init__(self, time_series_1=None, time_series_2=None, metadata=None):
         """
@@ -53,19 +53,56 @@ class MMDTW:
                 cost = pdist(temp, metric=self._distance)
 
                 if t1 == 0 and t2 == 0:
+                    # Starting case
                     cost_mat[t1, t2] = cost
                 elif t1 == 0:
+                    # Iterating over second time series
                     cost_mat[t1, t2] = cost + cost_mat[t1, t2 - 1]
                 elif t2 == 0:
+                    # Iterating over first time series
                     cost_mat[t1, t2] = cost + cost_mat[t1 - 1, t2]
                 else:
+                    # Computing the intermediate cost function
                     cost_mat[t1, t2] = cost + np.min([cost_mat[t1 - 1, t2],
                                                       cost_mat[t1 - 1, t2 - 1],
                                                       cost_mat[t1, t2 - 1]])
         print(cost_mat[t1, t2])
 
-    def idtw(self):
-        pass
+    def idtw(self, weights=None):
+
+        if weights is None or weights == []:
+            weights = np.ones((self._num_variates,))
+
+        final_cost = 0
+        for v in range(0, self._num_variates):
+            cost_mat = np.full((self._num_timestamps_1, self._num_timestamps_2), np.inf)
+
+            temp = np.zeros((2, 1))
+
+            for t1 in range(0, self._num_timestamps_1):
+                for t2 in range(0, self._num_timestamps_2):
+                    temp[0, 0] = self._ts1[t1, v]
+                    temp[1, 0] = self._ts2[t2, v]
+                    cost = pdist(temp, metric=self._distance)
+
+                    if t1 == 0 and t2 == 0:
+                        # Starting case
+                        cost_mat[t1, t2] = cost
+                    elif t1 == 0:
+                        # Iterating over second time series
+                        cost_mat[t1, t2] = cost + cost_mat[t1, t2 - 1]
+                    elif t2 == 0:
+                        # Iterating over first time series
+                        cost_mat[t1, t2] = cost + cost_mat[t1 - 1, t2]
+                    else:
+                        # Computing the intermediate cost function
+                        cost_mat[t1, t2] = cost + np.min([cost_mat[t1 - 1, t2],
+                                                          cost_mat[t1 - 1, t2 - 1],
+                                                          cost_mat[t1, t2 - 1]])
+            final_cost += (cost_mat[t1, t2] * weights[v])
+            print(cost_mat[t1, t2])
+        print(final_cost)
+
 
     def wdtw(self):
         pass

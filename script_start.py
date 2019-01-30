@@ -14,3 +14,4 @@ print(metadata.shape)
 mmdtw = MMDTW(time_series_1=ts1, time_series_2=ts2, metadata=metadata)
 
 mmdtw.vdtw()
+mmdtw.idtw()
