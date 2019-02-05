@@ -20,23 +20,26 @@ class MMDTW:
         :param time_series_2: array, timestamps x variates
         :param metadata: array, variates x variates
         """
-        self._ts1 = time_series_1
-        self._ts2 = time_series_2
-        self._metadata = metadata
+        if time_series_1 is not None:
+            self._ts1 = time_series_1
+            self._num_timestamps_1 = self._ts1.shape[0]
 
-        self._num_timestamps_1 = self._ts1.shape[0]
-        self._num_timestamps_2 = self._ts2.shape[0]
+        if time_series_2 is not None:
+            self._ts2 = time_series_2
+            self._num_timestamps_2 = self._ts2.shape[0]
 
-        self._num_variates = self._metadata.shape[0]
+        if metadata is not None:
+            self._metadata = metadata
+            self._num_variates = self._metadata.shape[0]
 
     def set_time_series1(self, time_series_1):
         self._ts1 = time_series_1
-        self._num_timestamps_1 = time_series_1.shape[0]
+        self._num_timestamps_1 = time_series_1[0]
 
     def set_time_series2(self, time_series_2):
         self._ts1 = time_series_2
-        self._num_timestamps_2 = self._ts2.shape[0]
-
+        self._num_timestamps_2 = time_series_2[0]
+    
     def set_metadata(self, metadata):
         self._metadata = metadata
 
