@@ -31,9 +31,11 @@ class MMDTW:
 
     def set_time_series1(self, time_series_1):
         self._ts1 = time_series_1
+        self._num_timestamps_1 = time_series_1.shape[0]
 
     def set_time_series2(self, time_series_2):
         self._ts1 = time_series_2
+        self._num_timestamps_2 = self._ts2.shape[0]
 
     def set_metadata(self, metadata):
         self._metadata = metadata
