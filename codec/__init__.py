@@ -108,8 +108,18 @@ class MMDTW:
             print(cost_mat[t1, t2])
         print(final_cost)
 
-    def wdtw(self):
-        pass
+    def wdtw(self, invert_weigths=True):
+
+        # Eignedecomposition to extract weights for Weighted Dynamic Time Warping
+        eig_val, _ = np.linalg.eig(self._metadata)
+        weights = np.abs(eig_val)
+        # Inverting weights
+        if invert_weigths:
+            weights = np.reciprocal(weights[0:4])
+        # Normalizing the weights to unity.
+        weights /= np.sum(weights)
+
+        return self.idtw(eig_val, weights=weights)
 
     def pdtw(self):
         pass
