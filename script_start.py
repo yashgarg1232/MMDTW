@@ -1,4 +1,5 @@
 from codec import MMDTW
+
 import numpy as np
 
 ts1 = np.loadtxt('./data/1.csv', delimiter=',', dtype=float)
@@ -10,7 +11,9 @@ print(ts2.shape)
 print(metadata.shape)
 
 
-dtw = MMDTW(time_series_1=ts1, time_series_2=ts2, metadata=metadata)
+mmdtw = MMDTW(time_series_1=ts1, time_series_2=ts2, metadata=metadata)
 
-dtw.vdtw()
-dtw.idtw()
+mmdtw.vdtw()
+mmdtw.idtw()
+mmdtw.wdtw()
+mmdtw.pdtw()
