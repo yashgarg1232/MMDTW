@@ -34,11 +34,11 @@ class MMDTW:
 
     def set_time_series1(self, time_series_1):
         self._ts1 = time_series_1
-        self._num_timestamps_1 = time_series_1[0]
+        self._num_timestamps_1 = time_series_1.shape[0]
 
     def set_time_series2(self, time_series_2):
         self._ts1 = time_series_2
-        self._num_timestamps_2 = time_series_2[0]
+        self._num_timestamps_2 = time_series_2.shape[0]
     
     def set_metadata(self, metadata):
         self._metadata = metadata
@@ -107,7 +107,6 @@ class MMDTW:
             final_cost += (cost_mat[t1, t2] * weights[v])
             print(cost_mat[t1, t2])
         print(final_cost)
-
 
     def wdtw(self):
         pass
