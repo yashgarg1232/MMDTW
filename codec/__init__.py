@@ -3,8 +3,12 @@ import numpy as np
 
 class MMDTW:
 
-    _ts1 = None  # Variates x Timestamps
-    _ts2 = None  # Variates x Timestamps
+    _ts1 = None  # Raw: Variates x Timestamps
+    _ts2 = None  # Raw: Variates x Timestamps
+
+    _ts1_p = None  # Projected: Variates x Timestamps
+    _ts2_p = None  # Projected: Variates x Timestamps
+
     _metadata = None  # Variates x Variates
 
     _num_timestamps_1 = None
@@ -73,7 +77,7 @@ class MMDTW:
                                                       cost_mat[t1, t2 - 1]])
         print(cost_mat[t1, t2])
 
-    def idtw(self, weights=None):
+    def idtw(self, weights=None, projected=False):
 
         if weights is None or weights == []:
             weights = np.ones((self._num_variates,))
@@ -86,8 +90,8 @@ class MMDTW:
 
             for t1 in range(0, self._num_timestamps_1):
                 for t2 in range(0, self._num_timestamps_2):
-                    temp[0, 0] = self._ts1[t1, v]
-                    temp[1, 0] = self._ts2[t2, v]
+                    temp[0, 0] = self._ts1[t1, v] if not projected else self._ts1_p[t1, v]
+                    temp[1, 0] = self._ts2[t2, v] if not projected else self._ts2_p[t1, v]
                     cost = pdist(temp, metric=self._distance)
 
                     if t1 == 0 and t2 == 0:
@@ -105,10 +109,10 @@ class MMDTW:
                                                           cost_mat[t1 - 1, t2 - 1],
                                                           cost_mat[t1, t2 - 1]])
             final_cost += (cost_mat[t1, t2] * weights[v])
-            print(cost_mat[t1, t2])
+            print((cost_mat[t1, t2] * weights[v]))
         print(final_cost)
 
-    def wdtw(self, invert_weigths=True):
+    def wdtw(self, invert_weigths=False):
 
         # Eignedecomposition to extract weights for Weighted Dynamic Time Warping
         eig_val, _ = np.linalg.eig(self._metadata)
@@ -119,10 +123,23 @@ class MMDTW:
         # Normalizing the weights to unity.
         weights /= np.sum(weights)
 
-        return self.idtw(eig_val, weights=weights)
+        return self.idtw(weights=weights)
 
-    def pdtw(self):
-        pass
+    def pdtw(self, invert_weigths=True):
+        eig_val, eig_vec = np.linalg.eig(self._metadata)
+        weights = np.abs(eig_val)
+        # Inverting weights
+        if invert_weigths:
+            weights = np.reciprocal(weights[0:4])
+        # Normalizing the weights to unity.
+        weights /= np.sum(weights)
+
+        self._ts1_p = np.matmul(self._ts1, eig_vec)
+        self._ts2_p = np.matmul(self._ts2, eig_vec)
+
+        print(self._ts1_p.shape)
+
+        # return self.idtw(weights=weights, projected=True)
 
 
 class MMException:
