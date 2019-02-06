@@ -5,6 +5,8 @@ Metadata-enriched Dynamic Time Warping for Multi-Variate Time Series
 
 Consider citing either (or both) of the following works.
 
+### Wiki : [Quick Start](https://github.com/yashgarg1232/MMDTW/wiki)
+
 ```
 @inproceedings{garg2017effectiveness,
   title={On the Effectiveness of Distance Measures for Similarity Search in Multi-Variate Sensory Data: Effectiveness of Distance Measures for Similarity Search},
